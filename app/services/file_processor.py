@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 import pandas as pd
 from pydantic import ValidationError
 
+from app.core.errors import summarize_errors
 from app.schemas.item import ItemCreate
 
 REQUIRED_COLUMNS = {"name", "price", "quantity"}
@@ -112,11 +113,7 @@ def _clean_optional_str(value: object) -> str | None:
 
 
 def _summarize_error(exc: Exception) -> str:
-    """검증 오류를 사람이 읽기 쉬운 한 줄로 요약."""
+    """검증 오류를 사람이 읽기 쉬운 한 줄(한글)로 요약."""
     if isinstance(exc, ValidationError):
-        parts = []
-        for err in exc.errors():
-            loc = ".".join(str(x) for x in err["loc"])
-            parts.append(f"{loc}: {err['msg']}")
-        return "; ".join(parts)
+        return summarize_errors(exc.errors())
     return str(exc)

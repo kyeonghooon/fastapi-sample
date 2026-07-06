@@ -67,3 +67,13 @@ async def test_create_invalid_item_returns_422(client: AsyncClient) -> None:
     # 이름 누락 → 검증 실패
     resp = await client.post("/items", json={"price": 100, "quantity": 1})
     assert resp.status_code == 422
+    # 오류 메시지가 한글로 반환되는지 확인
+    detail = resp.json()["detail"]
+    assert isinstance(detail, list)
+    assert any("상품명" in msg for msg in detail)
+
+
+async def test_missing_item_message_is_korean(client: AsyncClient) -> None:
+    resp = await client.get("/items/9999")
+    assert resp.status_code == 404
+    assert resp.json()["detail"] == "해당 상품을 찾을 수 없습니다"

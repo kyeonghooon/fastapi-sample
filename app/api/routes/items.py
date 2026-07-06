@@ -32,7 +32,7 @@ async def get_item(item_id: int, db: AsyncSession = Depends(get_db)) -> ItemRead
     """상품 1건을 조회한다. 없으면 404."""
     item = await crud.get_item(db, item_id)
     if item is None:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="해당 상품을 찾을 수 없습니다")
     return item
 
 
@@ -43,7 +43,7 @@ async def update_item(
     """상품을 수정한다. 없으면 404."""
     item = await crud.get_item(db, item_id)
     if item is None:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="해당 상품을 찾을 수 없습니다")
     return await crud.update_item(db, item, data)
 
 
@@ -52,5 +52,5 @@ async def delete_item(item_id: int, db: AsyncSession = Depends(get_db)) -> None:
     """상품을 삭제한다. 없으면 404."""
     item = await crud.get_item(db, item_id)
     if item is None:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="해당 상품을 찾을 수 없습니다")
     await crud.delete_item(db, item)

@@ -38,6 +38,8 @@ async def test_upload_csv(client: AsyncClient) -> None:
     assert body["created"] == 2
     assert body["failed"] == 2
     assert len(body["errors"]) == 2
+    # 행 오류 메시지가 한글로 반환되는지 확인 (3행: 이름 없음)
+    assert "상품명" in body["errors"][0]["message"]
 
     # 실제로 DB에 반영됐는지 확인
     resp = await client.get("/items")
