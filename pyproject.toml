@@ -9,6 +9,8 @@ dependencies = [
     "uvicorn[standard]>=0.32.0",
     "sqlalchemy[asyncio]>=2.0.36",
     "aiomysql>=0.2.0",
+    # aiomysql 이 MySQL 8 기본 인증(caching_sha2_password)을 처리하려면 필요
+    "cryptography>=43.0.0",
     "pydantic-settings>=2.6.0",
     "pandas>=2.2.0",
     "openpyxl>=3.1.0",
