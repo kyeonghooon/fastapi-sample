@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: fastapi_sample_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-fastapi_sample}
+      MYSQL_USER: ${MYSQL_USER:-sample}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sample}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpass}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # 앱을 컨테이너로 띄우고 싶을 때만 사용: docker compose --profile app up
+  # 기본은 db 만 띄우고 로컬에서 `uv run uvicorn app.main:app --reload` 실행 권장
+  app:
+    build: .
+    container_name: fastapi_sample_app
+    profiles: ["app"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # 컨테이너 내부에서는 host 를 db 서비스명으로 지정
+      DATABASE_URL: mysql+aiomysql://${MYSQL_USER:-sample}:${MYSQL_PASSWORD:-sample}@db:3306/${MYSQL_DATABASE:-fastapi_sample}
+    ports:
+      - "8000:8000"
+
+volumes:
+  mysql_data:
