@@ -1,0 +1,31 @@
+# 로컬 계획용 (원격에 올리지 않음)
+AGENTS.md
+.agents/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# 가상환경 / uv
+.venv/
+venv/
+
+# 환경변수
+.env
+
+# 테스트 / 캐시
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+
+# DB 볼륨 (docker)
+mysql_data/
